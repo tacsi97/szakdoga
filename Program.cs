@@ -58,26 +58,21 @@ namespace CsaladFaTxt
             Program.people.Add(_6);
             Program.people.Add(_7);
             Program.people.Add(_8);
-
-            Tree tree = new Tree(A1);
-            tree.ParentNodesToDictionary();
-            tree.ChildNodes();
-            tree.WriteTheTree();
-            Console.WriteLine("----------------------------------------");
-            Tree tree1 = new Tree(AB1);
-            tree1.ParentNodesToDictionary();
-            tree1.ChildNodes();
-            tree1.WriteTheTree();
-            Console.WriteLine("----------------------------------------");
-            Tree tree2 = new Tree(ABC1);
-            tree2.ParentNodesToDictionary();
-            tree2.ChildNodes();
-            tree2.WriteTheTree();
-            Console.WriteLine("----------------------------------------");
-            do
+            for(int i = 0; i < Program.people.Count; ++i)
             {
-
-            } while ()
+                Console.WriteLine($"{i}. {Program.people[i].ToString()}");
+            }
+            int input;
+            input = int.Parse(Console.ReadLine());
+            while (input != -1)
+            {
+                Tree tree = new Tree(Program.people[input]);
+                tree.ParentNodesToDictionary();
+                tree.ChildNodes();
+                tree.WriteTheTree();
+                Console.WriteLine("----------------------------------------");
+                input = int.Parse(Console.ReadLine());
+            }
             Console.ReadKey();
         }
     }

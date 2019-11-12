@@ -55,6 +55,8 @@ namespace CsaladFaTxt
                     }
                 }
             }
+            SetTouchedToFalse();
+            DeletePrefix();
         }
         private void addToDictionary(int level, Person person)
         {
@@ -191,6 +193,11 @@ namespace CsaladFaTxt
                     ++sum;
             }
             return sum;
+        }
+        public void DeletePrefix()
+        {
+            foreach (var person in Program.people)
+                person.Prefix = "";
         }
     }
 }
