@@ -209,27 +209,13 @@ namespace CsaladFaTxt
         public void ChildNodes()
         {
             var root = Root;
-            var level = 0;
+            var level = -1;
             var branches = new Stack<Person>();
             var defaultCountOfTabulators = PeopleInLevels.Keys.Count;
-            if (root.GetUnTouchedChildNode() == null)
-            {
-                Console.Write(WriteTabulators(defaultCountOfTabulators));
-                Console.Write(WriteTabulators(level));
-                if (root.Pair != null)
-                    Console.WriteLine(root.ToString() + ", " + root.Pair.ToString());
-                else
-                    Console.WriteLine(root.ToString());
-            }
-            else if (root.Pair != null)
-            {
-                Console.Write(WriteTabulators(defaultCountOfTabulators));
-                Console.WriteLine(root.ToString() + ", " + root.Pair.ToString());
-                if (root.GetUnTouchedChildNode() != null)
-                    branches.Push(root);
-                else if (root.Pair.GetUnTouchedChildNode() != null)
-                    branches.Push(root);
-            }  
+            if (root.GetUnTouchedChildNode() != null)
+                branches.Push(root);
+            else if (root.Pair != null && root.Pair.GetUnTouchedChildNode() != null)
+                branches.Push(root);
             while(branches.Count != 0)
             {
                 if (root.GetUnTouchedChildNode() != null)
