@@ -58,7 +58,7 @@ namespace CsaladFaTxt
             SetTouchedToFalse();
             DeletePrefix();
         }
-        private void addToDictionary(int level, Person person)
+        private void SetPersonLevel(int level, Person person)
         {
             if (!peopleInLevels.ContainsKey(level))
                 peopleInLevels.Add(level, new List<Person>());
@@ -67,158 +67,206 @@ namespace CsaladFaTxt
         }
         public void ParentNodesToDictionary()
         {
-            var rootGender = Root.Gender;
-            var branch = new Stack<Person>();
-            if (Root.Gender.Equals(Gender.Male))
             {
-                Root.Prefix = "2";
-                if(Root.Pair != null)
-                    Root.Pair.Prefix = "1";
+                //var rootGender = Root.Gender;
+                //var branch = new Stack<Person>();
+                //if (Root.Gender.Equals(Gender.Male))
+                //{
+                //    Root.Prefix = "2";
+                //    if(Root.Pair != null)
+                //        Root.Pair.Prefix = "1";
+                //}
+                //else
+                //{
+                //    Root.Prefix = "1";
+                //    if (Root.Pair != null)
+                //        Root.Pair.Prefix = "2";
+                //}
+                //branch.Push(Root);
+                //var level = 0;
+                //while(branch.Count != 0)
+                //{
+                //    Root.Touched = true;
+                //    if (Root.Mother != null && Root.Mother.Touched != true)
+                //    {
+                //        Person.SetPrefixFromChildNode(Root.Mother, Root);
+                //        Root = Root.Mother;
+                //        branch.Push(Root);
+                //        ++level;
+                //        addToDictionary(level, Root);
+                //    }
+                //    else if (Root.Father != null && Root.Father.Touched != true)
+                //    {
+                //        Person.SetPrefixFromChildNode(Root.Father, Root);
+                //        Root = Root.Father;
+                //        branch.Push(Root);
+                //        ++level;
+                //        addToDictionary(level, Root);
+                //    }
+                //    else if(Root.Pair != null && Root.Pair.Touched != true)
+                //    {
+                //        branch.Pop();
+                //        if(branch.Count != 0)
+                //            Person.SetPrefixFromChildNode(Root.Pair, branch.Peek());
+                //        Root = Root.Pair;
+                //        addToDictionary(level, Root);
+                //        branch.Push(Root);
+                //    }
+                //    else
+                //    {
+                //        if (level == 0)
+                //        {
+                //            addToDictionary(level, Root);
+                //            if(Root.Pair != null && !peopleInLevels[level].Contains(Root.Pair))
+                //            {
+                //                peopleInLevels[level].RemoveAt(peopleInLevels[level].Count - 1);
+                //                addToDictionary(level, Root.Pair);
+                //            }
+                //        }
+                //        branch.Pop();
+                //        --level;
+                //        if (branch.Count != 0)
+                //        {
+                //            Root = branch.Peek();
+                //        }
+                //    }
+                //}
+                //if (Root.Pair != null && rootGender.Equals(Gender.Male))
+                //    Root = Root.Pair;
+            }
+            var root = Root;
+            var level = 0;
+            var branches = new Stack<Person>();
+            branches.Push(root);
+            SetPersonLevel(level, root);
+            root.IsTouched = true;
+            if(root.Gender.Equals(Gender.Male))
+            {
+                root.Prefix = "1";
+                if (root.Pair != null)
+                    root.Pair.Prefix = "2";
             }
             else
             {
-                Root.Prefix = "1";
-                if (Root.Pair != null)
-                    Root.Pair.Prefix = "2";
+                root.Prefix = "2";
+                if (root.Pair != null)
+                    root.Pair.Prefix = "1";
             }
-            branch.Push(Root);
-            var level = 0;
-            while(branch.Count != 0)
+            while(branches.Count != 0)
             {
-                Root.Touched = true;
-                if (Root.Mother != null && Root.Mother.Touched != true)
+                if(root.Mother != null && !root.Mother.IsTouched)
                 {
-                    Person.SetPrefixFromChildNode(Root.Mother, Root);
-                    Root = Root.Mother;
-                    branch.Push(Root);
-                    ++level;
-                    addToDictionary(level, Root);
+                    root.Mother.Prefix = root.Prefix + "2";
+                    root = root.Mother;
+                    level++;
                 }
-                else if (Root.Father != null && Root.Father.Touched != true)
+                else if(root.Father != null && !root.Father.IsTouched)
                 {
-                    Person.SetPrefixFromChildNode(Root.Father, Root);
-                    Root = Root.Father;
-                    branch.Push(Root);
-                    ++level;
-                    addToDictionary(level, Root);
+                    root.Father.Prefix = root.Prefix + "1";
+                    root = root.Mother;
+                    level++;
                 }
-                else if(Root.Pair != null && Root.Pair.Touched != true)
+                else if(root.Pair != null && !root.Pair.IsTouched)
                 {
-                    branch.Pop();
-                    if(branch.Count != 0)
-                        Person.SetPrefixFromChildNode(Root.Pair, branch.Peek());
-                    Root = Root.Pair;
-                    addToDictionary(level, Root);
-                    branch.Push(Root);
+                    branches.Pop();
+                    root = root.Pair;
+                    if (branches.Count != 0)
+                        if (root.Gender.Equals(Gender.Male))
+                            root.Prefix = branches.Peek().Prefix + "1";
+                        else
+                            root.Prefix = branches.Peek().Prefix + "2";
                 }
                 else
                 {
-                    if (level == 0)
+                    if(branches.Count != 1)
                     {
-                        addToDictionary(level, Root);
-                        if(Root.Pair != null && !peopleInLevels[level].Contains(Root.Pair))
-                        {
-                            peopleInLevels[level].RemoveAt(peopleInLevels[level].Count - 1);
-                            addToDictionary(level, Root.Pair);
-                        }
+                        branches.Pop();
+                        level--;
                     }
-                    branch.Pop();
-                    --level;
-                    if (branch.Count != 0)
-                    {
-                        Root = branch.Peek();
-                    }
+                    root = branches.Peek();
                 }
+                if(!branches.Contains(root))
+                {
+                    branches.Push(root);
+                    SetPersonLevel(level, root);
+                    root.IsTouched = true;
+                }
+                if (
+                    (root.Pair == null || root.Pair.IsTouched) &&
+                    (root.Mother == null || root.Mother.IsTouched) &&
+                    (root.Father == null || root.Father.IsTouched) &&
+                    (branches.Count == 1)
+                    )
+                    branches.Pop();
             }
-            if (Root.Pair != null && rootGender.Equals(Gender.Male))
-                Root = Root.Pair;
             SetTouchedToFalse();
         }
         private void SetTouchedToFalse()
         {
             foreach (var person in Program.people)
-                person.Touched = false;
+                person.IsTouched = false;
         }
         public void ChildNodes()
         {
-            int level = 0;
-            Gender inputRootGender = Root.Gender;
-            Person rootMother = Root.Mother;
-            Person rootPairMother = null;
-            if (Root.Pair != null)
+            var root = Root;
+            var level = 0;
+            var branches = new Stack<Person>();
+            var defaultCountOfTabulators = PeopleInLevels.Keys.Count;
+            if (root.GetUnTouchedChildNode() == null)
             {
-                rootPairMother = Root.Pair.Mother;
-                Root.Pair.Mother = null;
+                Console.Write(WriteTabulators(defaultCountOfTabulators));
+                Console.Write(WriteTabulators(level));
+                if (root.Pair != null)
+                    Console.WriteLine(root.ToString() + ", " + root.Pair.ToString());
+                else
+                    Console.WriteLine(root.ToString());
             }
-            Root.Mother = null;
-            while (Root.GetUnTouchedChildNode() != null)
+            else if (root.Pair != null)
             {
-                if (Root.Touched == false)
-                {
-                    if (level != 0)
-                    {
-                        addToDictionary(level, Root);
-                        addToDictionary(level, Root.Pair);
-                    }
-                    Root.Touched = true;
-                }
-                Person helper = Root.GetUnTouchedChildNode();
-                Person.SetPrefixFromParentNode(helper, Root);
-                Root = helper;
-                --level;
-                if(Root.GetUnTouchedChildNode() == null)
-                {
-                    Root.Touched = true;
-                    if (Root.Pair != null)
-                    {
-                        addToDictionary(level, Root);
-                        addToDictionary(level, Root.Pair);
-                    }
-                    else
-                        addToDictionary(level, Root);
-                    if (Root.Mother != null && Root.Mother.GetUnTouchedChildNode() != null)
-                    {
-                        Root = Root.Mother;
-                        ++level;
-                    }
-                    else
-                        while (Root.GetUnTouchedChildNode() == null
-                            && Root.Mother != null)
-                        {
-                            Root = Root.Mother;
-                            ++level;
-                        }
-                }
-            }
-            /* Akkor fejeződik be az algoritmus, ha nincs már több érintetlen csomópont,
-             * de nem a Root-nál áll meg, hanem a megadott párjánál, így ha a megadott nő,
-             * akkor férfinál áll meg.
-             * Ezért ebben az esetben meg kell cserélni őket.
-             */
-            if (Root.Pair != null)
+                Console.Write(WriteTabulators(defaultCountOfTabulators));
+                Console.WriteLine(root.ToString() + ", " + root.Pair.ToString());
+                if (root.GetUnTouchedChildNode() != null)
+                    branches.Push(root);
+                else if (root.Pair.GetUnTouchedChildNode() != null)
+                    branches.Push(root);
+            }  
+            while(branches.Count != 0)
             {
-                if (inputRootGender.Equals(Gender.Male))
+                if (root.GetUnTouchedChildNode() != null)
                 {
-                    if (!Root.Gender.Equals(Gender.Male))
-                    {
-                        Root.Mother = rootPairMother;
-                        Root.Pair.Mother = rootMother;
-                    }
+                    root = root.GetUnTouchedChildNode();
+                    level++;
+                    Console.Write(WriteTabulators(defaultCountOfTabulators));
+                    Console.Write(WriteTabulators(level));
+                    if (root.Pair != null)
+                        Console.WriteLine(root.ToString() + ", " + root.Pair.ToString());
                     else
-                    {
-                        Root.Mother = rootMother;
-                        Root.Pair.Mother = rootPairMother;
-                    }
+                        Console.WriteLine(root.ToString());
+                }
+                else if(root.Pair != null && !root.Pair.IsTouched)
+                {
+                    branches.Pop();
+                    root = root.Pair;
                 }
                 else
                 {
-                    Root.Mother = rootMother;
-                    Root.Pair.Mother = rootPairMother;
+                    if(branches.Count != 1)
+                    {
+                        branches.Pop();
+                        level--;
+                    }
+                    root = branches.Peek();
                 }
-            }
-            else
-            {
-                Root.Mother = rootMother;
+                if(!branches.Contains(root))
+                {
+                    branches.Push(root);
+                    root.IsTouched = true;
+                }
+                if (root.GetUnTouchedChildNode() == null &&
+                    (root.Pair == null || root.Pair.IsTouched) &&
+                    (branches.Count == 1)
+                    )
+                    branches.Pop();
             }
             SetTouchedToFalse();
         }
@@ -236,6 +284,15 @@ namespace CsaladFaTxt
         {
             foreach (var person in Program.people)
                 person.Prefix = "";
+        }
+        private string WriteTabulators(int count)
+        {
+            StringBuilder stringBuilder = new StringBuilder("");
+            for(int i = 0; i < count; ++i)
+            {
+                stringBuilder.Append("\t");
+            }
+            return stringBuilder.ToString();
         }
     }
 }

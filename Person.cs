@@ -99,7 +99,7 @@ namespace CsaladFaTxt
                 value.pair = this;
             }
         }
-        public bool Touched
+        public bool IsTouched
         {
             get => touched;
             set => touched = value;
@@ -108,7 +108,7 @@ namespace CsaladFaTxt
         {
             if (Children != null)
                 return this.Children.FirstOrDefault(
-                    Node => Node.Touched == false);
+                    Node => Node.IsTouched == false);
             else return null;
         }
         public static void SetPrefixFromChildNode(Person parentNode, Person childNode)

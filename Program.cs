@@ -84,8 +84,9 @@ namespace CsaladFaTxt
                 }
                 Tree tree = new Tree(Program.people[input]);
                 tree.ParentNodesToDictionary();
-                tree.ChildNodes();
                 tree.WriteTheTree();
+                tree.ChildNodes();
+                tree.PeopleInLevels = new Dictionary<int, List<Person>>();
                 Console.WriteLine("----------------------------------------");
                 input = int.Parse(Console.ReadLine());
             }
