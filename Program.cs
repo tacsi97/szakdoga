@@ -58,14 +58,30 @@ namespace CsaladFaTxt
             Program.people.Add(_6);
             Program.people.Add(_7);
             Program.people.Add(_8);
-            for(int i = 0; i < Program.people.Count; ++i)
+            for (int i = 0; i < Program.people.Count; ++i)
             {
-                Console.WriteLine($"{i}. {Program.people[i].ToString()}");
+                Person p = Program.people[i];
+                Console.Write($"{i}. {p.ToString()}");
+                if (p.Mother != null)
+                    Console.Write($" - {p.Mother.FullName}");
+                if (p.Father != null)
+                    Console.Write($" - {p.Father.FullName}");
+                Console.WriteLine();
             }
             int input;
             input = int.Parse(Console.ReadLine());
             while (input != -1)
             {
+                for (int i = 0; i < Program.people.Count; ++i)
+                {
+                    Person p = Program.people[i];
+                    Console.Write($"{i}. {p.ToString()}");
+                    if (p.Mother != null)
+                        Console.Write($" - {p.Mother.FullName}");
+                    if (p.Father != null)
+                        Console.Write($" - {p.Father.FullName}");
+                    Console.WriteLine();
+                }
                 Tree tree = new Tree(Program.people[input]);
                 tree.ParentNodesToDictionary();
                 tree.ChildNodes();

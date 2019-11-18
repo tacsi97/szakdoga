@@ -60,18 +60,14 @@ namespace CsaladFaTxt
         }
         private void addToDictionary(int level, Person person)
         {
-            try
-            {
+            if (!peopleInLevels.ContainsKey(level))
+                peopleInLevels.Add(level, new List<Person>());
+            if (peopleInLevels[level] != null)
                 peopleInLevels[level].Add(person);
-            }
-            catch (Exception e)
-            {
-                peopleInLevels[level] = new List<Person>();
-                peopleInLevels[level].Add(person);
-            }
         }
         public void ParentNodesToDictionary()
         {
+            var rootGender = Root.Gender;
             var branch = new Stack<Person>();
             if (Root.Gender.Equals(Gender.Male))
             {
@@ -108,11 +104,11 @@ namespace CsaladFaTxt
                 }
                 else if(Root.Pair != null && Root.Pair.Touched != true)
                 {
-                    addToDictionary(level, Root);
                     branch.Pop();
                     if(branch.Count != 0)
                         Person.SetPrefixFromChildNode(Root.Pair, branch.Peek());
                     Root = Root.Pair;
+                    addToDictionary(level, Root);
                     branch.Push(Root);
                 }
                 else
@@ -120,6 +116,11 @@ namespace CsaladFaTxt
                     if (level == 0)
                     {
                         addToDictionary(level, Root);
+                        if(Root.Pair != null && !peopleInLevels[level].Contains(Root.Pair))
+                        {
+                            peopleInLevels[level].RemoveAt(peopleInLevels[level].Count - 1);
+                            addToDictionary(level, Root.Pair);
+                        }
                     }
                     branch.Pop();
                     --level;
@@ -129,7 +130,7 @@ namespace CsaladFaTxt
                     }
                 }
             }
-            if (Root.Pair != null)
+            if (Root.Pair != null && rootGender.Equals(Gender.Male))
                 Root = Root.Pair;
             SetTouchedToFalse();
         }
@@ -141,7 +142,14 @@ namespace CsaladFaTxt
         public void ChildNodes()
         {
             int level = 0;
-            Person parent = Root.Mother;
+            Gender inputRootGender = Root.Gender;
+            Person rootMother = Root.Mother;
+            Person rootPairMother = null;
+            if (Root.Pair != null)
+            {
+                rootPairMother = Root.Pair.Mother;
+                Root.Pair.Mother = null;
+            }
             Root.Mother = null;
             while (Root.GetUnTouchedChildNode() != null)
             {
@@ -168,7 +176,7 @@ namespace CsaladFaTxt
                     }
                     else
                         addToDictionary(level, Root);
-                    if (Root.Mother.GetUnTouchedChildNode() != null)
+                    if (Root.Mother != null && Root.Mother.GetUnTouchedChildNode() != null)
                     {
                         Root = Root.Mother;
                         ++level;
@@ -182,7 +190,37 @@ namespace CsaladFaTxt
                         }
                 }
             }
-            Root.Mother = parent;
+            /* Akkor fejeződik be az algoritmus, ha nincs már több érintetlen csomópont,
+             * de nem a Root-nál áll meg, hanem a megadott párjánál, így ha a megadott nő,
+             * akkor férfinál áll meg.
+             * Ezért ebben az esetben meg kell cserélni őket.
+             */
+            if (Root.Pair != null)
+            {
+                if (inputRootGender.Equals(Gender.Male))
+                {
+                    if (!Root.Gender.Equals(Gender.Male))
+                    {
+                        Root.Mother = rootPairMother;
+                        Root.Pair.Mother = rootMother;
+                    }
+                    else
+                    {
+                        Root.Mother = rootMother;
+                        Root.Pair.Mother = rootPairMother;
+                    }
+                }
+                else
+                {
+                    Root.Mother = rootMother;
+                    Root.Pair.Mother = rootPairMother;
+                }
+            }
+            else
+            {
+                Root.Mother = rootMother;
+            }
+            SetTouchedToFalse();
         }
         public int CountNegativeInPeopleMap()
         {
