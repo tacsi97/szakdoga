@@ -31,17 +31,19 @@ namespace CsaladFaTxt
                 tabs.Append('\t');
             return tabs.ToString();
         }
+        /** Kiírja a map-ben tárolt személyeket, tabulátorokkal eltolva.
+         * 
+         */
         public void WriteTheTree()
         {
-            int offset = CountNegativeInPeopleMap();
-            for (int j = PeopleInLevels.Count - offset - 1; j >= -offset; --j)
+            for (int j = PeopleInLevels.Count - 1; j >= 0; --j)
             {
                 for (int i = 0; i < PeopleInLevels[j].Count; ++i)
                 {
                     if (PeopleInLevels[j][i].Pair != null)
                     {
                         Console.Write(
-                            NumberOfTabulators(PeopleInLevels.Count - j - (offset + 1))
+                            NumberOfTabulators(PeopleInLevels.Count - j - 1)
                             );
                         Console.WriteLine(PeopleInLevels[j][i].ToString() + ", " + PeopleInLevels[j][i].Pair.ToString());
                         ++i;
@@ -49,7 +51,7 @@ namespace CsaladFaTxt
                     else
                     {
                         Console.Write(
-                            NumberOfTabulators(PeopleInLevels.Count - j - (offset + 1))
+                            NumberOfTabulators(PeopleInLevels.Count - j - 1)
                             );
                         Console.WriteLine(PeopleInLevels[j][i].ToString());
                     }
@@ -67,73 +69,6 @@ namespace CsaladFaTxt
         }
         public void ParentNodesToDictionary()
         {
-            {
-                //var rootGender = Root.Gender;
-                //var branch = new Stack<Person>();
-                //if (Root.Gender.Equals(Gender.Male))
-                //{
-                //    Root.Prefix = "2";
-                //    if(Root.Pair != null)
-                //        Root.Pair.Prefix = "1";
-                //}
-                //else
-                //{
-                //    Root.Prefix = "1";
-                //    if (Root.Pair != null)
-                //        Root.Pair.Prefix = "2";
-                //}
-                //branch.Push(Root);
-                //var level = 0;
-                //while(branch.Count != 0)
-                //{
-                //    Root.Touched = true;
-                //    if (Root.Mother != null && Root.Mother.Touched != true)
-                //    {
-                //        Person.SetPrefixFromChildNode(Root.Mother, Root);
-                //        Root = Root.Mother;
-                //        branch.Push(Root);
-                //        ++level;
-                //        addToDictionary(level, Root);
-                //    }
-                //    else if (Root.Father != null && Root.Father.Touched != true)
-                //    {
-                //        Person.SetPrefixFromChildNode(Root.Father, Root);
-                //        Root = Root.Father;
-                //        branch.Push(Root);
-                //        ++level;
-                //        addToDictionary(level, Root);
-                //    }
-                //    else if(Root.Pair != null && Root.Pair.Touched != true)
-                //    {
-                //        branch.Pop();
-                //        if(branch.Count != 0)
-                //            Person.SetPrefixFromChildNode(Root.Pair, branch.Peek());
-                //        Root = Root.Pair;
-                //        addToDictionary(level, Root);
-                //        branch.Push(Root);
-                //    }
-                //    else
-                //    {
-                //        if (level == 0)
-                //        {
-                //            addToDictionary(level, Root);
-                //            if(Root.Pair != null && !peopleInLevels[level].Contains(Root.Pair))
-                //            {
-                //                peopleInLevels[level].RemoveAt(peopleInLevels[level].Count - 1);
-                //                addToDictionary(level, Root.Pair);
-                //            }
-                //        }
-                //        branch.Pop();
-                //        --level;
-                //        if (branch.Count != 0)
-                //        {
-                //            Root = branch.Peek();
-                //        }
-                //    }
-                //}
-                //if (Root.Pair != null && rootGender.Equals(Gender.Male))
-                //    Root = Root.Pair;
-            }
             var root = Root;
             var level = 0;
             var branches = new Stack<Person>();

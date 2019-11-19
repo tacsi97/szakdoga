@@ -72,7 +72,7 @@ namespace CsaladFaTxt
         public DateTime DeathDate
         {
             get { return deathDate; }
-            set { deathDate = value; }
+            set { deathDate = (DateTime) value; }
         }
         public Gender Gender
         {
@@ -133,6 +133,26 @@ namespace CsaladFaTxt
             Mother = mother;
             Children = new List<Person>();
             Father = father;
+            Gender = gender;
+        }
+        public Person(string firstName, string lastName, DateTime birthDate, DateTime deathDate, Person mother, Person father, Gender gender)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            BirthDate = birthDate;
+            Mother = mother;
+            Children = new List<Person>();
+            DeathDate = deathDate;
+            Father = father;
+            Gender = gender;
+        }
+        public Person(string firstName, string lastName, DateTime birthDate, DateTime deathDate, Gender gender)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            BirthDate = birthDate;
+            Children = new List<Person>();
+            DeathDate = deathDate;
             Gender = gender;
         }
         public override string ToString()
