@@ -9,11 +9,23 @@ namespace CsaladFaTxt
     class Tree
     {
         private Person root;
+        private bool writeSiblings = true;
         private Dictionary<int, List<Person>> peopleInLevels = new Dictionary<int, List<Person>>();
         public Dictionary<int, List<Person>> PeopleInLevels
         {
             get { return peopleInLevels; }
             set { peopleInLevels = value; }
+        }
+        public bool WriteSiblings
+        {
+            get
+            {
+                return writeSiblings;
+            }
+            set
+            {
+                writeSiblings = value;
+            }
         }
         public Person Root
         {
@@ -98,7 +110,7 @@ namespace CsaladFaTxt
                 else if(root.Father != null && !root.Father.IsTouched)
                 {
                     root.Father.Prefix = root.Prefix + "1";
-                    root = root.Mother;
+                    root = root.Father;
                     level++;
                 }
                 else if(root.Pair != null && !root.Pair.IsTouched)
@@ -144,6 +156,10 @@ namespace CsaladFaTxt
         public void ChildNodes()
         {
             var root = Root;
+            //if (Root.Mother != null)
+            //    root = Root.Mother;
+            //else if (Root.Father != null)
+            //    root = Root.Father;
             var level = -1;
             var branches = new Stack<Person>();
             var defaultCountOfTabulators = PeopleInLevels.Keys.Count;
@@ -159,10 +175,11 @@ namespace CsaladFaTxt
                     level++;
                     Console.Write(WriteTabulators(defaultCountOfTabulators));
                     Console.Write(WriteTabulators(level));
-                    if (root.Pair != null)
-                        Console.WriteLine(root.ToString() + ", " + root.Pair.ToString());
-                    else
-                        Console.WriteLine(root.ToString());
+                    //if (level != 0)
+                        if (root.Pair != null)
+                            Console.WriteLine(root.ToString() + ", " + root.Pair.ToString());
+                        else
+                            Console.WriteLine(root.ToString());
                 }
                 else if(root.Pair != null && !root.Pair.IsTouched)
                 {

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace CsaladFaTxt
 {
-
     class Person
     {
+        private List<Person> exPairs = new List<Person>();
         private bool touched = false;
         private Gender gender;
         private string prefix;
@@ -67,7 +67,7 @@ namespace CsaladFaTxt
         public DateTime BirthDate
         {
             get { return birthDate; }
-            set { birthDate = value; }
+            set { birthDate = (DateTime) value; }
         }
         public DateTime DeathDate
         {
@@ -78,6 +78,11 @@ namespace CsaladFaTxt
         {
             get { return gender; }
             set { gender = value; }
+        }
+        public List<Person> ExPairs
+        {
+            get { return exPairs; }
+            set { exPairs = value; }
         }
         public int Age
         {
@@ -96,7 +101,8 @@ namespace CsaladFaTxt
             set
             {
                 pair = value;
-                value.pair = this;
+                if (value != null)
+                    value.pair = this;
             }
         }
         public bool IsTouched
@@ -157,7 +163,22 @@ namespace CsaladFaTxt
         }
         public override string ToString()
         {
-            return prefix + " " + firstName + " " + lastName + "(" + BirthDate.ToString("yyyy-MM-dd") + ")";
+            var basic = new StringBuilder();
+            basic.Append($"{prefix} {lastName} {firstName}");
+            if (birthDate != DateTime.Parse("0001-01-01"))
+                basic.Append($" ({BirthDate.ToString("yyyy-MM-dd")}) ");
+            if (exPairs.Count != 0)
+            {
+                basic.Append("(volt párok: ");
+                exPairs.ForEach((item) => {
+                    if (item != null)
+                        if (item != exPairs[ExPairs.Count - 1])
+                            basic.Append($"{item.FullName},");
+                        else
+                            basic.Append($"{item.FullName})");
+                });
+            }
+            return basic.ToString();
         }
 
     }
